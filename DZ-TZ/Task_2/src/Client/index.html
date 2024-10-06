@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+<h1></h1>
+
+<h2>Добавление студента</h2>
+<form id="addStudentForm">
+    <label for="firstName">Имя:</label>
+    <input type="text" id="name" name="name" required>
+    <br>
+    <label for="lastName">Фамилия:</label>
+    <input type="text" id="lastName" name="lastName" required>
+    <br>
+    <label for="middleName">Отчество:</label>
+    <input type="text" id="fatherName" name="fatherName">
+    <br>
+    <label for="dateOfBirth">Дата рождения:</label>
+    <input type="date" id="birthDate" name="birthDate" required>
+    <br>
+    <label for="studentGroup">Группа:</label>
+    <input type="text" id="groupNumber" name="groupNumber" required>
+    <br>
+    <label for="uniqueNumber">Уникальный номер:</label>
+    <input type="text" id="id" name="id" placeholder="В формате UUID " required>
+    <br>
+    <button type="submit">Добавить</button>
+</form>
+
+<h2>Удаление студента</h2>
+<form id="deleteStudentForm">
+    <label for="deleteUniqueNumber">Уникальный номер:</label>
+    <input type="text" id="idDeleted" name="idDeleted" required>
+    <br>
+    <button type="submit">Удалить</button>
+</form>
+
+<h2>Список студентов</h2>
+<table id="studentList">
+    <thead>
+    <tr>
+        <th>Уникальный номер</th>
+        <th>Имя</th>
+        <th>Фамилия</th>
+        <th>Отчество</th>
+        <th>Дата рождения</th>
+        <th>Группа</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+</body>
+</html>
