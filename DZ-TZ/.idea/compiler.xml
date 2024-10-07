@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+    <excludeFromCompile>
+      <directory url="file://$PROJECT_DIR$/Task/src/main/resources/archetype-resources" includeSubdirectories="true" />
+      <directory url="file://$PROJECT_DIR$/Task3/src/main/resources/archetype-resources" includeSubdirectories="true" />
+    </excludeFromCompile>
     <annotationProcessing>
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="Task_3" />
         <module name="Task_2" />
         <module name="zzz" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="Task" target="1.8" />
       <module name="Task-2" target="1.8" />
+      <module name="Task3" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

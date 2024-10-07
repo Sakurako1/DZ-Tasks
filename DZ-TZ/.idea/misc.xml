@@ -7,11 +7,15 @@
         <option value="$PROJECT_DIR$/Task_2/pom.xml" />
         <option value="$PROJECT_DIR$/Task-2/pom.xml" />
         <option value="$PROJECT_DIR$/zzz/pom.xml" />
+        <option value="$PROJECT_DIR$/Task/pom.xml" />
+        <option value="$PROJECT_DIR$/Task3/pom.xml" />
+        <option value="$PROJECT_DIR$/Task_3/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/Task-2/pom.xml" />
+        <option value="$PROJECT_DIR$/Task3/pom.xml" />
       </set>
     </option>
   </component>
