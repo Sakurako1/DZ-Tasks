@@ -14,22 +14,20 @@ public class ScanFiles {
         this.rootDirectory = rootDirectory;
     }
 
-public List<Path> getFiles() throws IOException {
+    public List<Path> getFiles() throws IOException {
 
-    List<Path> textFiles = new ArrayList<>();
+        List<Path> textFiles = new ArrayList<>();
 
 
-    Files.walk(rootDirectory)
-            .filter(Files::isRegularFile)
-            .filter(path -> path.toString().endsWith(".txt"))
-            .forEach(textFiles::add);
+        Files.walk(rootDirectory)
+                .filter(Files::isRegularFile)
+                .filter(path -> path.toString().endsWith(".txt"))
+                .sorted()
+                .forEach(textFiles::add);
 
-    return textFiles;
-}
-
-    public boolean isDirectoryEmpty(File directory) {
-        String[] files = directory.list();
-        return files.length == 0;
+        return textFiles;
     }
+
+
 }
 

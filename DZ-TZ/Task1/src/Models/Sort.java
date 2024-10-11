@@ -1,44 +1,41 @@
 package Models;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.*;
 
 public class Sort {
-    public List<Path> sortFiles(Map<Path, List<Path>> dependencies) throws Exception {
-        List<Path> sortedFiles = new ArrayList<>();
-        Set<Path> visited = new HashSet<>();
-        Set<Path> stack = new HashSet<>();
+    public List<String> sortFiles(Map<String, List<String>> dependencies) throws Exception {
+        Map<String, Boolean> visited = new HashMap<>();
+        List<String> sortedList = new ArrayList<>();
+        Set<String> inStack = new HashSet<>();
 
-        for (Path file : dependencies.keySet()) { // Инициация поиска и обработка циклической зависимости
-            if (!visited.contains(file)) {
-                if (DFS(file, dependencies, visited, stack, sortedFiles)) {
-                    throw new IOException("Циклы найдены");
-                }
+        for (String file : dependencies.keySet()) {
+            if (DFS(file, dependencies, visited, sortedList, inStack)) {
+                throw new IllegalStateException("Цикл найден : " + inStack);
             }
         }
 
+        return sortedList;
 
-        return sortedFiles;
     }
 
-    private boolean DFS(Path file, Map<Path, List<Path>> dependencies, Set<Path> visited, Set<Path> inStack, List<Path> sortedFiles) {
-        visited.add(file);
-        inStack.add(file);
+    private boolean DFS(String file, Map<String, List<String>> dependencies, Map<String, Boolean> visited, List<String> sortedList, Set<String> recursionStack) {
+        if (recursionStack.contains(file)) {
+            return true;
+        }
+        if (Boolean.TRUE.equals(visited.get(file))) {
+            return false;
+        }
 
-        for (Path requiredFile : dependencies.getOrDefault(file, Collections.emptyList())) {
-            if (inStack.contains(requiredFile)) {
-                System.out.println("Цикл найден в: " + requiredFile);  // Логика поиска циклической зависимости и первичная обработка ее
-                return true; // Цикл обнаружен
-            }
-            if (!visited.contains(requiredFile)) {
-                if (DFS(requiredFile, dependencies, visited, inStack, sortedFiles)) {
-                    return true;
-                }
+        visited.put(file, true);
+        recursionStack.add(file);
+
+        for (String dependency : dependencies.getOrDefault(file, Collections.emptyList())) {
+            if (DFS(dependency, dependencies, visited, sortedList, recursionStack)) {
+                return true;
             }
         }
 
-        inStack.remove(file);
-        sortedFiles.add(file);
+        recursionStack.remove(file);
+        sortedList.add(file);
         return false;
     }
 }

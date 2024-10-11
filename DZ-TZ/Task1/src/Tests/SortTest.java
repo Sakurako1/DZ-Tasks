@@ -1,5 +1,6 @@
 package Tests;
 import Models.Sort;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
@@ -13,76 +14,76 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class SortTest {
     private Sort fileSorter;
 
-    @org.junit.jupiter.api.Test
-    @BeforeEach
-    void setUp() {
-        fileSorter = new Sort(); // Предположим, что наша функция находится в классе FileSorter
+    @Test
+    public void testSortFilesWithoutCycles() throws Exception {
+        // Создаем тестовые данные (без циклов)
+        Map<String, List<String>> dependencies = new HashMap<>();
+        dependencies.put("FileA", Arrays.asList("FileB", "FileC"));
+        dependencies.put("FileB", Arrays.asList("FileD"));
+        dependencies.put("FileC", Arrays.asList("FileD"));
+        dependencies.put("FileD", Collections.emptyList());
+
+        Sort sort = new Sort();
+        List<String> sortedFiles = sort.sortFiles(dependencies);
+
+        // Проверяем, что сортировка произошла корректно
+        List<String> expectedOrder = Arrays.asList("FileD", "FileC", "FileB", "FileA");
+        Assertions.assertEquals(expectedOrder, sortedFiles);
     }
 
     @Test
-    void testSortFiles_successfulSort() throws Exception {
-        // Arrange
-        Map<Path, List<Path>> dependencies = new HashMap<>();
+    public void testSortFilesWithCycle() {
+        // Создаем тестовые данные с циклом
+        Map<String, List<String>> dependencies = new HashMap<>();
+        dependencies.put("FileA", Arrays.asList("FileB"));
+        dependencies.put("FileB", Arrays.asList("FileC"));
+        dependencies.put("FileC", Arrays.asList("FileA")); // Цикл
 
-        Path fileA = Paths.get("A");
-        Path fileB = Paths.get("B");
-        Path fileC = Paths.get("C");
+        Sort sort = new Sort();
 
-        // Зависимости
-        dependencies.put(fileA, Arrays.asList(fileB, fileC));
-        dependencies.put(fileB, Arrays.asList(fileC));
-        dependencies.put(fileC, new ArrayList<>());
-
-        // Act
-        List<Path> sortedFiles = fileSorter.sortFiles(dependencies);
-
-        // Assert
-        List<Path> expectedOrder = Arrays.asList(fileC, fileB, fileA);
-        assertEquals(expectedOrder, sortedFiles);
-    }
-    @Test
-    void testSortFiles_cycleDetected() {
-        // Arrange
-        Map<Path, List<Path>> dependencies = new HashMap<>();
-
-        Path fileA = Paths.get("A");
-        Path fileB = Paths.get("B");
-        Path fileC = Paths.get("C");
-
-        // Зависимости с циклом
-        dependencies.put(fileA, Collections.singletonList(fileB));
-        dependencies.put(fileB, Collections.singletonList(fileC));
-        dependencies.put(fileC, Collections.singletonList(fileA)); // Цикл
-
-        // Act & Assert
-        Exception exception = assertThrows(IOException.class, () -> fileSorter.sortFiles(dependencies));
-        assertEquals("Циклы найдены", exception.getMessage());
-    }
-    @Test
-    void testSortFiles_emptyDependencies() throws Exception {
-        // Arrange
-        Map<Path, List<Path>> dependencies = new HashMap<>();
-
-        // Act
-        List<Path> sortedFiles = fileSorter.sortFiles(dependencies);
-
-        // Assert
-        assertEquals(Collections.emptyList(), sortedFiles);
+        // Ожидаем, что метод выбросит IllegalStateException из-за цикла
+        Assertions.assertThrows(IllegalStateException.class, () -> {
+            sort.sortFiles(dependencies);
+        });
     }
 
     @Test
-    void testSortFiles_noDependenciesForSomeFiles() throws Exception {
-        // Arrange
-        Map<Path, List<Path>> dependencies = new HashMap<>();
-        Path fileA = Paths.get("A");
-        Path fileB = Paths.get("B");
-        // Файл B не имеет зависимых файлов
-        dependencies.put(fileA, Collections.singletonList(fileB));
-        dependencies.put(fileB, new ArrayList<>());
-        // Act
-        List<Path> sortedFiles = fileSorter.sortFiles(dependencies);
-        // Assert
-        List<Path> expectedOrder = Arrays.asList(fileB, fileA);
-        assertEquals(expectedOrder, sortedFiles);
+    public void testSortFilesEmptyGraph() throws Exception {
+        // Тест для пустого графа
+        Map<String, List<String>> dependencies = new HashMap<>();
+
+        Sort sort = new Sort();
+        List<String> sortedFiles = sort.sortFiles(dependencies);
+
+        // Пустая карта должна вернуть пустой список
+        Assertions.assertTrue(sortedFiles.isEmpty());
+    }
+
+    @Test
+    public void testSortFilesSingleNode() throws Exception {
+        // Тест для одного узла без зависимостей
+        Map<String, List<String>> dependencies = new HashMap<>();
+        dependencies.put("FileA", Collections.emptyList());
+
+        Sort sort = new Sort();
+        List<String> sortedFiles = sort.sortFiles(dependencies);
+
+        // Сортировка для одного файла должна вернуть его в одиночном экземпляре
+        Assertions.assertEquals(Collections.singletonList("FileA"), sortedFiles);
+    }
+
+    @Test
+    public void testSortFilesMultipleNodesWithoutDependencies() throws Exception {
+        // Тест для нескольких узлов без зависимостей
+        Map<String, List<String>> dependencies = new HashMap<>();
+        dependencies.put("FileA", Collections.emptyList());
+        dependencies.put("FileB", Collections.emptyList());
+        dependencies.put("FileC", Collections.emptyList());
+
+        Sort sort = new Sort();
+        List<String> sortedFiles = sort.sortFiles(dependencies);
+
+        // Все файлы независимы, поэтому порядок не имеет значения
+        Assertions.assertTrue(sortedFiles.containsAll(Arrays.asList("FileA", "FileB", "FileC")));
     }
 }
